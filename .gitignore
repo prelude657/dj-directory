@@ -40,3 +40,22 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# ==========================================
+# .NET 8 Backend
+# ==========================================
+bin/
+obj/
+out/
+*.user
+*.userosscache
+*.sln.docstates
+appsettings.Development.json
+
+# ==========================================
+# Local SQLite Database
+# ==========================================
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3

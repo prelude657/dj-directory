@@ -1,0 +1,85 @@
+<div class="home-container">
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <span class="badge">The Ultimate DJ Network</span>
+      <h1>Find & Book Exceptional DJs Near You</h1>
+      <p>Connect with top open-format selectors, producers, and club DJs for events, venues, and private parties.</p>
+
+      <!-- Search Bar -->
+      <div class="search-box">
+        <input 
+          type="text" 
+          [(ngModel)]="searchQuery" 
+          (input)="applyFilter()"
+          placeholder="Search by DJ name, city, or style..."
+          (keyup.enter)="onSearch()"
+        />
+        <select [(ngModel)]="selectedGenre" (change)="applyFilter()">
+          <option value="">All Genres</option>
+          <option *ngFor="let genre of genres" [value]="genre">{{ genre }}</option>
+        </select>
+        <button (click)="onSearch()">Search DJs</button>
+      </div>
+
+      <!-- Quick Genre Chips -->
+      <div class="genre-chips">
+        <span class="chip-label">Popular:</span>
+        <button 
+          *ngFor="let genre of (genres?.slice(0, 6) || [])" 
+          type="button"
+          class="chip"
+          [class.active]="selectedGenre === genre"
+          (click)="selectQuickGenre(genre)"
+        >
+          {{ genre }}
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured DJs / Search Results Section -->
+  <section class="featured-section">
+    <div class="section-header">
+      <div>
+        <h2>{{ searchQuery || selectedGenre ? 'Search Results' : 'Featured DJs' }}</h2>
+        <p>{{ searchQuery || selectedGenre ? 'Showing matching profiles from the database.' : 'Top-rated artists bringing the best sounds to the stage.' }}</p>
+      </div>
+      <a routerLink="/directory" class="view-all">View All DJs &rarr;</a>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-state" style="text-align: center; padding: 3rem 0; color: #64748b;">
+      <p>Loading DJ profiles...</p>
+    </div>
+
+    <!-- Empty Results -->
+    <div *ngIf="!loading && (displayedDjs?.length === 0)" class="empty-state" style="text-align: center; padding: 3rem 0; background: #f8fafc; border-radius: 12px;">
+      <p style="font-weight: 500; color: #334155;">No DJs match your search criteria.</p>
+      <button (click)="resetFilters()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #0284c7; color: white; border: none; border-radius: 6px; cursor: pointer;">
+        Reset Filters
+      </button>
+    </div>
+
+    <!-- DJ Grid -->
+    <div *ngIf="!loading && (displayedDjs?.length || 0) > 0" class="dj-grid">
+      <div *ngFor="let dj of displayedDjs" class="dj-card">
+        <div class="card-image">
+          <img [src]="dj.profileImageUrl" [alt]="dj.stageName" />
+          <span class="rating">★ {{ dj.rating || 5.0 }} ({{ dj.reviewCount || 0 }})</span>
+        </div>
+        <div class="card-body">
+          <h3>{{ dj.stageName }}</h3>
+          <p class="location">📍 {{ dj.location || 'Salvador, BA' }}</p>
+          <p class="tagline">{{ dj.tagline }}</p>
+          
+          <div class="card-genres">
+            <span *ngFor="let g of (dj.genres?.slice(0, 3) || [])" class="genre-tag">{{ g }}</span>
+          </div>
+
+          <a [routerLink]="['/dj', dj.id]" class="profile-btn">View Profile</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
